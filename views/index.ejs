@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Groupchat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        #chatbox{
+            border: 1px solid black;
+            height: 300px;
+            width: 500px;
+            overflow:scroll;
+        }
+        #usermsg{
+            height:20px;
+            width: 500px;
+        }
+
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type ="text/javascript">
+    $(document).ready(function(){
+        var name = prompt('what is your name?');
+        var socket = io.connect();
+        $('#m_box').submit(function(){
+            socket.emit('got_new_user', {name: name, msg: $('#usermsg').val()});
+            $('#chatbox').append("<p>" + name + ": " + $('#usermsg').val() + "</p>");
+            return false;
+        })
+    
+        socket.on('server_response', function(data){
+            console.log(data.name);
+            $('#chatbox').append("<p>" + data.name + ": " + data.msg + "</p>");
+        });
+    })
+    </script>
+</head>
+<body>
+    <div id="chatbox">
+
+    </div>
+
+    <div id="messagebox">
+        <form id ="m_box" name="message">
+            <input name="usermsg" type="text" id="usermsg"/>
+            <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
+        </form>
+    </div>
+</body>
+</html>
